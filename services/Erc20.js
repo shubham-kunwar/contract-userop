@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.approve = exports.approveAndSignToken = void 0;
+exports.transfer = exports.approveAndSignToken = void 0;
 const ethers_1 = require("ethers");
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
@@ -37,22 +37,15 @@ function approveAndSignToken(ERC20Contract, ERC20Address, value) {
     });
 }
 exports.approveAndSignToken = approveAndSignToken;
-function approve(ERC20Contract, ERC20Address, value) {
+function transfer(ERC20Contract, ERC20Address, receiverAddress, value) {
     return __awaiter(this, void 0, void 0, function* () {
-        const decimals = yield Promise.all([ERC20Contract.decimals()]);
-        const amount = ethers_1.ethers.utils.parseUnits(value, decimals);
-        console.log(amount, decimals);
-        const approve = {
-            to: ERC20Address,
-            value: amount,
-            data: ERC20Contract.interface.encodeFunctionData("approve", [ERC20Address, amount]),
-        };
+        const amount = ethers_1.ethers.utils.parseUnits(value);
         const send = {
             to: ERC20Address,
-            value: amount,
-            data: ERC20Contract.interface.encodeFunctionData("transfer", [ERC20Address, amount]),
+            value: 0,
+            data: ERC20Contract.interface.encodeFunctionData("transfer", [receiverAddress, amount]),
         };
-        return [approve, send];
+        return [send];
     });
 }
-exports.approve = approve;
+exports.transfer = transfer;

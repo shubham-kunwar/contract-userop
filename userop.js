@@ -56,20 +56,20 @@ async function main() {
   const to = "0x28B556EB9CA5E3235A4251f36C98Dd9fbf316900"; ///random
   const token = "0x06365A63B7b8270f9B629f2FeE0c7ceaE591d86F";
   const value = "10";
-  const calls = await approveAndSendToken(to, token, value);
+//   const calls = await approveAndSendToken(to, token, value);
 
-  // Build & send
-  // Connect to the client and send the user operation
-const client = await Client.init(rpcUrl);
-const res = await client.sendUserOperation(builder.executeBatch(calls), {
-  onBuild: (op) => console.log("Signed UserOperation:", op),
-});
+//   // Build & send
+//   // Connect to the client and send the user operation
+// const client = await Client.init(rpcUrl);
+// const res = await client.sendUserOperation(builder.executeBatch(calls), {
+//   onBuild: (op) => console.log("Signed UserOperation:", op),
+// });
 
 
-  console.log(`UserOpHash: ${res.userOpHash}`);
-  console.log("Waiting for transaction...");
-  const ev = await res.wait();
-  console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
+//   console.log(`UserOpHash: ${res.userOpHash}`);
+//   console.log("Waiting for transaction...");
+//   const ev = await res.wait();
+//   console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
 }
 
 main().catch((err) => console.error("Error:", err));

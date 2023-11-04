@@ -36,26 +36,20 @@ export async function approveAndSignToken(
 }
 
 
-export async function approve(
+export async function transfer(
   ERC20Contract:any,
   ERC20Address: string,
+  receiverAddress:string,
   value: string,
 ):Promise<any[]> {
 
-  const decimals = await Promise.all([ERC20Contract.decimals()]);
-  const amount = ethers.utils.parseUnits(value, decimals);
-  console.log(amount,decimals)
-  const approve = {
-    to: ERC20Address,
-    value:amount,
-    data: ERC20Contract.interface.encodeFunctionData("approve", [ERC20Address, amount]),
-  };
+  const amount = ethers.utils.parseUnits(value);
 
   const send = {
     to: ERC20Address,
-    value: amount,
-    data: ERC20Contract.interface.encodeFunctionData("transfer", [ERC20Address, amount]),
+    value:0,
+    data: ERC20Contract.interface.encodeFunctionData("transfer", [receiverAddress, amount]),
   };
-  return [approve, send];
+  return [send];
 }
 

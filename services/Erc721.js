@@ -32,12 +32,18 @@ function approveAndSignNFToken(ERC721Contract, ERC721Address, ownerAddress, rece
     });
 }
 exports.approveAndSignNFToken = approveAndSignNFToken;
-function mintNft(ERC721Contract, ERC721Address) {
+function mintNft(ownerAddress, ERC721Contract, ERC721Address) {
     return __awaiter(this, void 0, void 0, function* () {
+        const allowlistProof = {
+            "proof": [],
+            "quantityLimitPerWallet": "1",
+            "pricePerToken": "0",
+            "currency": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        };
         const mint = {
             to: ERC721Address,
             value: ethers_1.ethers.constants.Zero,
-            data: ERC721Contract.interface.encodeFunctionData("claim", []),
+            data: ERC721Contract.interface.encodeFunctionData("claim", [ownerAddress, 1, "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", 0, allowlistProof, []]),
         };
         console.log(mint);
         return [mint];

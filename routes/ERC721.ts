@@ -39,8 +39,6 @@ function initializeERC721Routes(
       
       const ownerAddress = decoded.smartWalletAddress;
 
-      console.log(ownerAddress)
-      
       
       const getUserOp = await approveAndSignNFToken(
         ERC721Contract,
@@ -81,6 +79,7 @@ function initializeERC721Routes(
           });
         }
     } catch (error: any) {
+      console.log(error)
       res.status(500).json({ error: error.reason || error.message });
     }
   });
@@ -100,19 +99,20 @@ function initializeERC721Routes(
       // Extract the JWT token (remove 'Bearer ' from the token string)
       const token = bearerToken.split(" ")[1];
 
-      // Verify and decode the JWT token
-      jwt.verify(
-        token,
-        process.env.SECRET_KEY as string,
-        (err: jwt.VerifyErrors | null, decoded: any) => {
-          if (err) {
-            return res.status(401).json({ error: "Unauthorized" });
-          } else {
-            return decoded;
-          }
+         // Verify and decode the JWT token
+         interface DecodedToken {
+          smartWalletAddress: string; // Adjust the type to match the actual data type of walletaddress
+          // Add other properties if present in the decoded token
         }
-      );
-      const getUserOp = await mintNft(ERC721Contract,ERC721Address);
+      // Verify and decode the JWT token
+
+      const decoded = jwt.verify(
+        token,
+        process.env.SECRET_KEY as string
+      ) as DecodedToken;
+      
+      const ownerAddress = decoded.smartWalletAddress;
+      const getUserOp = await mintNft(ownerAddress,ERC721Contract,ERC721Address);
 
       // Relay the transaction via smart wallet
       try {
@@ -123,7 +123,7 @@ function initializeERC721Routes(
           password,
           bearerToken
         );
-        // console.log(signUserOp)
+        console.log(signUserOp)
 
         // Respond to the client
         if (signUserOp.status == 200) {
@@ -145,7 +145,8 @@ function initializeERC721Routes(
         });
       }
     } catch (error: any) {
-      res.status(500).json({ error: error.reason || error.message });
+      console.log(error)
+      res.status(500).json({ error: error });
     }
   });
 

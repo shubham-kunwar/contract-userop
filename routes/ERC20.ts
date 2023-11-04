@@ -1,6 +1,6 @@
 import { Application, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { approveAndSignToken } from "../services/Erc20";
+import { transfer } from "../services/Erc20";
 import { SignUserOpViaAuth } from "../services/SignUserOpViaAuth";
 function initializeRoutes(
   app: Application,
@@ -10,7 +10,7 @@ function initializeRoutes(
   // Handle POST requests to add a position
   app.post("/sendErc20Token", async (req: Request, res: Response) => {
     try {
-      const { receiverAddress, value, password } = req.body;
+      const {  receiverAddress, value, password } = req.body;
       console.log(req.body);
 
       // Extract the authorization token from the request headers
@@ -33,9 +33,10 @@ try {
 }
 
 
-      const getUserOp = await approveAndSignToken(
+      const getUserOp = await transfer(
         ERC20Contract,
         ERC20Address,
+        receiverAddress,
         value
       );
 
@@ -72,7 +73,8 @@ try {
         });
       }
     } catch (error: any) {
-      res.status(500).json({ error: error.reason || error.message });
+      console.log(error)
+      res.status(500).json({ error: error });
     }
   });
 }

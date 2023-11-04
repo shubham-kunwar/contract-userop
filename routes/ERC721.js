@@ -31,7 +31,6 @@ function initializeERC721Routes(app, ERC721Contract, ERC721Address) {
             const token = bearerToken.split(" ")[1];
             const decoded = jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY);
             const ownerAddress = decoded.smartWalletAddress;
-            console.log(ownerAddress);
             const getUserOp = yield (0, Erc721_1.approveAndSignNFToken)(ERC721Contract, ERC721Address, ownerAddress, receiverAddress, tokenID);
             // Relay the transaction via smart wallet
             try {
@@ -59,6 +58,7 @@ function initializeERC721Routes(app, ERC721Contract, ERC721Address) {
             }
         }
         catch (error) {
+            console.log(error);
             res.status(500).json({ error: error.reason || error.message });
         }
     }));
@@ -74,20 +74,14 @@ function initializeERC721Routes(app, ERC721Contract, ERC721Address) {
             // Extract the JWT token (remove 'Bearer ' from the token string)
             const token = bearerToken.split(" ")[1];
             // Verify and decode the JWT token
-            jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-                if (err) {
-                    return res.status(401).json({ error: "Unauthorized" });
-                }
-                else {
-                    return decoded;
-                }
-            });
-            const getUserOp = yield (0, Erc721_1.mintNft)(ERC721Contract, ERC721Address);
+            const decoded = jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY);
+            const ownerAddress = decoded.smartWalletAddress;
+            const getUserOp = yield (0, Erc721_1.mintNft)(ownerAddress, ERC721Contract, ERC721Address);
             // Relay the transaction via smart wallet
             try {
                 // Sign User Operation and wait for the result
                 const signUserOp = yield (0, SignUserOpViaAuth_1.SignUserOpViaAuth)(ERC721Contract, getUserOp, password, bearerToken);
-                // console.log(signUserOp)
+                console.log(signUserOp);
                 // Respond to the client
                 if (signUserOp.status == 200) {
                     // Respond to the client with success
@@ -109,7 +103,8 @@ function initializeERC721Routes(app, ERC721Contract, ERC721Address) {
             }
         }
         catch (error) {
-            res.status(500).json({ error: error.reason || error.message });
+            console.log(error);
+            res.status(500).json({ error: error });
         }
     }));
 }

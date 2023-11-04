@@ -18,6 +18,7 @@ const signerBaseUrl = process.env.SIGNER_BASEURL || "";
 function SignUserOpViaAuth(contract, getUserOp, password, bearerToken) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            console.log(getUserOp);
             const signatureResponse = yield axios_1.default.post(`${signerBaseUrl}/auth/userOpsBuilder`, {
                 contract,
                 getUserOp,

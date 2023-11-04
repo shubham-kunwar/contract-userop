@@ -38,7 +38,7 @@ function initializeRoutes(app, ERC20Contract, ERC20Address) {
                 console.error("JWT verification error:", err);
                 return res.status(401).json({ error: "Unauthorized" });
             }
-            const getUserOp = yield (0, Erc20_1.approveAndSignToken)(ERC20Contract, ERC20Address, value);
+            const getUserOp = yield (0, Erc20_1.transfer)(ERC20Contract, ERC20Address, receiverAddress, value);
             console.log(getUserOp);
             // Relay the transaction via smart wallet
             try {
@@ -66,7 +66,8 @@ function initializeRoutes(app, ERC20Contract, ERC20Address) {
             }
         }
         catch (error) {
-            res.status(500).json({ error: error.reason || error.message });
+            console.log(error);
+            res.status(500).json({ error: error });
         }
     }));
 }
